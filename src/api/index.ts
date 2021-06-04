@@ -1,20 +1,22 @@
-import { ReadableStream, create as createStream } from './stream'
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+
+import { User } from '../../dist/api/schema/user'
 import { ListResponse } from './response'
 import {
-	Contact,
-	Course,
-	District,
-	DistrictAdmin,
-	Event,
-	Profile,
-	School,
-	SchoolAdmin,
-	Section,
-	Student,
-	Teacher,
-	Term
+  Contact,
+  Course,
+  District,
+  DistrictAdmin,
+  Event,
+  Profile,
+  School,
+  SchoolAdmin,
+  Section,
+  Student,
+  Teacher,
+  Term,
 } from './schema'
+import { create as createStream, ReadableStream } from './stream'
 
 export const DEFAULT_TIMEOUT = 2000
 
@@ -68,6 +70,7 @@ export function createClient(opts: Config): Client {
 		},
 		getProfile: (ver: string = apiVer) => client.get(`${ver}/me`),
 		contacts: apis('contacts', ['district', 'students']),
+		users: apis('users', ['district', 'students']),
 		courses: apis('courses', ['district', 'sections']),
 		districts: apis('districts'),
 		events: apis('events'),
@@ -110,6 +113,12 @@ export interface Client {
 		list(): Promise<ListResponse<Course>>
 		district(id: string): Promise<District>
 		sections(id: string): Promise<ListResponse<Section>>
+	}
+	users: {
+		get(id: string): Promise<User>
+		list(): Promise<ListResponse<User>>
+		district(id: string): Promise<District>
+		students(id: string): Promise<ListResponse<Student>>
 	}
 	contacts: {
 		get(id: string): Promise<Contact>
