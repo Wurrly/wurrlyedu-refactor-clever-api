@@ -15,17 +15,6 @@
 		"precommit:eslint": "eslint -c .eslintrc-precommit --fix './**/*.{ts,tsx}'",
 		"precommit:prettier": "prettier --write"
 	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged": {
-		"*.ts": [
-			"npm run precommit:eslint",
-			"npm run precommit:prettier"
-		]
-	},
 	"keywords": [
 		"Clever"
 	],
@@ -81,5 +70,9 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Wurrly/wurrlyedu-refactor-clever-api"
+	},
+	"bugs": {
+		"url": "https://github.com/Wurrly/wurrlyedu-refactor-clever-api/issues",
+		"email": "jorge@capicua.com.uy"
 	}
 }

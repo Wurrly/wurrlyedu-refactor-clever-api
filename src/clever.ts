@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { createClient, Config as ClientConfig, Client } from './api'
+
+import { Client, Config as ClientConfig, createClient } from './api'
 import { ApplicationToken } from './api/schema'
 
 export function createClever(clientId: string, clientSecret = ''): Clever {
@@ -79,7 +80,7 @@ export interface AccessTokenOpts {
 export interface AuthUrlOpts {
 	districtId?: string
 	redirectUri?: string
-	state?: object | string
+	state?: Record<string, unknown> | string
 }
 
 export interface ListTokensParams {
