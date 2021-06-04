@@ -3,18 +3,18 @@ import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { User } from '../../dist/api/schema/user'
 import { ListResponse } from './response'
 import {
-  Contact,
-  Course,
-  District,
-  DistrictAdmin,
-  Event,
-  Profile,
-  School,
-  SchoolAdmin,
-  Section,
-  Student,
-  Teacher,
-  Term,
+    Contact,
+    Course,
+    District,
+    DistrictAdmin,
+    Event,
+    Profile,
+    School,
+    SchoolAdmin,
+    Section,
+    Student,
+    Teacher,
+    Term,
 } from './schema'
 import { create as createStream, ReadableStream } from './stream'
 

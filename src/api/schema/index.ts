@@ -8,9 +8,11 @@ import { Section } from './section'
 import { Student } from './student'
 import { Teacher } from './teacher'
 import { Term } from './term'
+import { User } from './user'
 
 export * from './admin'
 export * from './contact'
+export * from './user'
 export * from './course'
 export * from './credentials'
 export * from './district'
@@ -30,6 +32,7 @@ export type NonEventResource =
 	| DistrictAdmin
 	| SchoolAdmin
 	| Contact
+	| User
 	| Course
 	| District
 	| School
