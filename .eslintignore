@@ -1,0 +1,7 @@
+node_modules
+dist
+src/serviceWorker.js
+src/graphql/autogenerate/*
+src/setupTests.ts
+coverage
+.nyc_output

@@ -1,0 +1,88 @@
+{
+	"name": "wurrly-refactor-clever-api",
+	"version": "1.0.0",
+	"description": "Module for interacting with the Clever APIs.",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"clean": "rimraf dist",
+		"build": "npm run clean && tsc -p .",
+		"prepublishOnly": "npm run build",
+		"test": "jest",
+		"prettier": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+		"eslint": "eslint -c .eslintrc 'src/**/*.{ts,tsx}'",
+		"eslint:fix": "npm run eslint -- --fix",
+		"precommit:eslint": "eslint -c .eslintrc-precommit --fix './**/*.{ts,tsx}'",
+		"precommit:prettier": "prettier --write",
+		"postinstall": "husky install"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.ts": [
+			"npm run precommit:eslint",
+			"npm run precommit:prettier"
+		]
+	},
+	"keywords": [
+		"Clever"
+	],
+	"author": "Jorge Espinoza",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/jest": "^24.0.18",
+		"@types/node": "^10.0.0",
+		"@types/qs": "^6.5.3",
+		"@typescript-eslint/eslint-plugin": "^4.15.1",
+		"@typescript-eslint/eslint-plugin-tslint": "^4.15.1",
+		"@typescript-eslint/parser": "^4.15.1",
+		"eslint": "^7.20.0",
+		"eslint-config-airbnb": "^18.2.1",
+		"eslint-config-prettier": "^7.2.0",
+		"eslint-plugin-graphql": "^4.0.0",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-jsdoc": "^32.0.2",
+		"eslint-plugin-unused-imports": "^1.1.0",
+		"husky": "^5.0.9",
+		"jest": "^24.9.0",
+		"jest-junit": "^6.4.0",
+		"lint-staged": "^10.5.4",
+		"prettier": "^2.3.0",
+		"ts-jest": "^26.4.4",
+		"ts-node": "^8.3.0",
+		"typescript": "^3.5.3"
+	},
+	"dependencies": {
+		"axios": "^0.21.1",
+		"qs": "^6.9.4",
+		"tslib": "^2.1.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
+	},
+	"files": [
+		"dist/",
+		"LICENSE",
+		"README.md",
+		"package.json"
+	],
+	"jest": {
+		"transform": {
+			".(ts|tsx)": "ts-jest"
+		},
+		"testRegex": "(test.*)(^.?|\\.[^d]|[^.]d|[^.][^d])\\.ts$",
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gradecam/clever-api.git"
+	}
+}
