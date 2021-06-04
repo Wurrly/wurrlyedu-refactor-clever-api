@@ -1,6 +1,5 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-import { User } from '../../dist/api/schema/user'
 import { ListResponse } from './response'
 import {
     Contact,
@@ -15,6 +14,7 @@ import {
     Student,
     Teacher,
     Term,
+    User,
 } from './schema'
 import { create as createStream, ReadableStream } from './stream'
 
