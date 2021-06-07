@@ -1,21 +1,7 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
 import { ListResponse } from './response'
-import {
-    Contact,
-    Course,
-    District,
-    DistrictAdmin,
-    Event,
-    Profile,
-    School,
-    SchoolAdmin,
-    Section,
-    Student,
-    Teacher,
-    Term,
-    User,
-} from './schema'
+import { Contact, Course, District, Event, Profile, Resource, School, Section, Student, Teacher, Term, User } from './schema'
 import { create as createStream, ReadableStream } from './stream'
 
 export const DEFAULT_TIMEOUT = 2000
@@ -30,7 +16,7 @@ export function createClient(opts: Config): Client {
 		headers,
 		timeout: opts.timeout || DEFAULT_TIMEOUT
 	})
-	const apiVer = opts.apiVer || 'v2.0'
+	const apiVer = opts.apiVer || 'v3.0'
 	instance.interceptors.response.use(async (res) => {
 		// console.log(res.data);
 		if (res.data && res.data.data) {
@@ -69,18 +55,22 @@ export function createClient(opts: Config): Client {
 			return instance.request(cfg).then((result) => result.data)
 		},
 		getProfile: (ver: string = apiVer) => client.get(`${ver}/me`),
-		contacts: apis('contacts', ['district', 'students']),
-		users: apis('users', ['district', 'students']),
-		courses: apis('courses', ['district', 'sections']),
+		courses: apis('courses', ['district', 'resources', 'schools', 'sections']),
 		districts: apis('districts'),
-		events: apis('events'),
+		resources: apis('resources'),
 		schools: apis('schools', ['district', 'sections', 'students', 'teachers']),
 		sections: apis('sections', ['course', 'district', 'school', 'students', 'teacher', 'teachers', 'term']),
-		students: apis('students', ['contacts', 'district', 'school', 'schools', 'sections', 'teachers']),
-		teachers: apis('teachers', ['district', 'school', 'schools', 'sections', 'students']),
 		terms: apis('terms', ['district', 'sections']),
-		districtAdmins: apis('district_admins', ['district']),
-		schoolAdmins: apis('school_admins', ['district', 'schools']),
+		users: apis('users', [
+			'district',
+			'mycontacts',
+			'mystudents',
+			'myteachers',
+			'resources',
+			'schools',
+			'sections'
+		]),
+		events: apis('events'),
 		stream: (urlOrList: string | ListResponse) => createStream(urlOrList, client),
 		all: (stream: ReadableStream) => {
 			const results: any[] = []
@@ -112,82 +102,61 @@ export interface Client {
 		get(id: string): Promise<Course>
 		list(): Promise<ListResponse<Course>>
 		district(id: string): Promise<District>
+		resources(id: string): Promise<ListResponse<Resource>>
+		schools(id: string): Promise<ListResponse<School>>
 		sections(id: string): Promise<ListResponse<Section>>
-	}
-	users: {
-		get(id: string): Promise<User>
-		list(): Promise<ListResponse<User>>
-		district(id: string): Promise<District>
-		students(id: string): Promise<ListResponse<Student>>
-	}
-	contacts: {
-		get(id: string): Promise<Contact>
-		list(): Promise<ListResponse<Contact>>
-		district(id: string): Promise<District>
-		students(id: string): Promise<ListResponse<Student>>
 	}
 	districts: {
 		get(id: string): Promise<District>
 		list(): Promise<ListResponse<District>>
 	}
-	events: {
-		get(id: string): Promise<Event>
-		list(): Promise<ListResponse<Event>>
+	resources: {
+		get(id: string): Promise<Resource>
+		list(): Promise<ListResponse<Resource>>
+		courses(id: string): Promise<ListResponse<Course>>
+		sections(id: string): Promise<ListResponse<Section>>
+		users(id: string): Promise<ListResponse<User>>
 	}
 	schools: {
 		get(id: string): Promise<School>
 		list(): Promise<ListResponse<School>>
+		courses(id: string): Promise<ListResponse<Course>>
 		district(id: string): Promise<District>
 		sections(id: string): Promise<ListResponse<Section>>
-		students(id: string): Promise<ListResponse<Student>>
-		teachers(id: string): Promise<ListResponse<Teacher>>
+		terms(id: string): Promise<ListResponse<Term>>
+		users(id: string): Promise<ListResponse<User>>
 	}
 	sections: {
 		get(id: string): Promise<Section>
 		list(): Promise<ListResponse<Section>>
 		course(id: string): Promise<Course>
 		district(id: string): Promise<District>
+		resources(id: string): Promise<ListResponse<Resource>>
 		school(id: string): Promise<School>
-		students(id: string): Promise<ListResponse<Student>>
-		teacher(id: string): Promise<Teacher>
-		teachers(id: string): Promise<ListResponse<Teacher>>
 		term(id: string): Promise<Term>
-	}
-	students: {
-		get(id: string): Promise<Student>
-		list(): Promise<ListResponse<Student>>
-		contacts(id: string): Promise<ListResponse<Contact>>
-		district(id: string): Promise<District>
-		school(id: string): Promise<School>
-		schools(id: string): Promise<ListResponse<School>>
-		sections(id: string): Promise<ListResponse<Section>>
-		teachers(id: string): Promise<ListResponse<Teacher>>
-	}
-	teachers: {
-		get(id: string): Promise<Teacher>
-		list(): Promise<ListResponse<Teacher>>
-		district(id: string): Promise<District>
-		school(id: string): Promise<School>
-		schools(id: string): Promise<ListResponse<School>>
-		sections(id: string): Promise<ListResponse<Section>>
-		students(id: string): Promise<ListResponse<Student>>
+		users(id: string): Promise<ListResponse<User>>
 	}
 	terms: {
 		get(id: string): Promise<Teacher>
 		list(): Promise<ListResponse<Teacher>>
 		district(id: string): Promise<District>
+		schools(id: string): Promise<ListResponse<School>>
 		sections(id: string): Promise<ListResponse<Section>>
 	}
-	districtAdmins: {
-		get(id: string): Promise<DistrictAdmin>
-		list(): Promise<ListResponse<DistrictAdmin>>
+	users: {
+		get(id: string): Promise<User>
+		list(): Promise<ListResponse<User>>
 		district(id: string): Promise<District>
-	}
-	schoolAdmins: {
-		get(id: string): Promise<SchoolAdmin>
-		list(): Promise<ListResponse<SchoolAdmin>>
-		district(id: string): Promise<District>
+		mycontacts(id: string): Promise<ListResponse<Contact>>
+		mystudents(id: string): Promise<ListResponse<Student>>
+		myteachers(id: string): Promise<ListResponse<Teacher>>
+		resources(id: string): Promise<ListResponse<Resource>>
 		schools(id: string): Promise<ListResponse<School>>
+		sections(id: string): Promise<ListResponse<Section>>
+	}
+	events: {
+		get(id: string): Promise<Event>
+		list(): Promise<ListResponse<Event>>
 	}
 	list<T = any>(url: string): Promise<ListResponse<T>>
 	request<T = any>(config: RequestConfig): Promise<T>
