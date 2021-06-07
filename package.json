@@ -1,6 +1,6 @@
 {
 	"name": "wurrly-refactor-clever-api",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Module for interacting with the Clever APIs.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
