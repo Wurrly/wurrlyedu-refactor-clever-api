@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 import { Readable } from 'stream'
-import { ListResponse } from './response'
+
 import { Client } from '.'
+import { ListResponse } from './response'
 
 export interface ReadableStream<T = any> {
 	pause(): ReadableStream<T>

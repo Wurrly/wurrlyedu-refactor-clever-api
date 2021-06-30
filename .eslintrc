@@ -28,7 +28,7 @@
 		"@typescript-eslint/typedef": [
 			"error",
 			{
-				"parameter": true,
+				"parameter": false,
 				"propertyDeclaration": true
 			}
 		],

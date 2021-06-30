@@ -1,6 +1,6 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-import { ListResponse } from './response'
+import { Link, ListResponse } from './response'
 import { Contact, Course, District, Event, Profile, Resource, School, Section, Student, Teacher, Term, User } from './schema'
 import { create as createStream, ReadableStream } from './stream'
 
@@ -32,7 +32,8 @@ export function createClient(opts: Config): Client {
 	function apis(resource: string, extra: string[] = []) {
 		const obj: any = {
 			get: (id: string) => client.get(`/${apiVer}/${resource}/${id}`),
-			list: () => client.list(`/${apiVer}/${resource}`)
+			list: () => client.list(`/${apiVer}/${resource}`),
+			pageThroughData: () => client.pageThroughData(`/${apiVer}/${resource}?limit=5000`)
 		}
 		for (const api of extra) {
 			obj[api] = (id: string) =>
@@ -53,6 +54,23 @@ export function createClient(opts: Config): Client {
 
 			// console.log({cfg});
 			return instance.request(cfg).then((result) => result.data)
+		},
+		pageThroughData: async <T = any>(url: string): Promise<T[]> => {
+			const tempDataStore: T[] = []
+			let response = await client.request({ url, method: 'GET' })
+			let nextUrl = getDataAndNextPage(response, tempDataStore)
+
+			// check for next page
+			// while next page exists{}
+			// getPage(nextPage, dataStore)
+			while (nextUrl) {
+				console.log(nextUrl)
+				response = await client.request({ url: nextUrl, method: 'GET' })
+				nextUrl = getDataAndNextPage(response, tempDataStore)
+			}
+
+			// at this point you have all data
+			return tempDataStore
 		},
 		getProfile: (ver: string = apiVer) => client.get(`${ver}/me`),
 		courses: apis('courses', ['district', 'resources', 'schools', 'sections']),
@@ -92,6 +110,38 @@ export function createClient(opts: Config): Client {
 	return client
 }
 
+const getNext = (links: Link[]) => {
+	// return null if no next
+	// or return the link to next page
+	let nextUri = ''
+
+	links.forEach(function (obj: Link) {
+		const rel = obj.rel
+		const uri = obj.uri
+
+		if (rel === 'next') {
+			nextUri = uri
+		}
+	})
+
+	return nextUri
+}
+
+const getDataAndNextPage = <T>(response: ListResponse<T>, dataStore: T[]) => {
+	// get data from page
+	const data = response.data
+	const links = response.links
+
+	const uri = getNext(links)
+
+	// add to data store
+	console.log('LENGTH: ', data.length)
+
+	dataStore.push(...data)
+
+	return uri
+}
+
 export default createClient
 
 export interface Client {
@@ -109,6 +159,7 @@ export interface Client {
 	districts: {
 		get(id: string): Promise<District>
 		list(): Promise<ListResponse<District>>
+		pageThroughData(): Promise<District[]>
 	}
 	resources: {
 		get(id: string): Promise<Resource>
@@ -125,6 +176,7 @@ export interface Client {
 		sections(id: string): Promise<ListResponse<Section>>
 		terms(id: string): Promise<ListResponse<Term>>
 		users(id: string): Promise<ListResponse<User>>
+		pageThroughData(): Promise<School[]>
 	}
 	sections: {
 		get(id: string): Promise<Section>
@@ -160,6 +212,7 @@ export interface Client {
 	}
 	list<T = any>(url: string): Promise<ListResponse<T>>
 	request<T = any>(config: RequestConfig): Promise<T>
+	pageThroughData<T = any>(url: string): Promise<T[]>
 	stream<T = any>(urlOrList: string | ListResponse<T>): ReadableStream<T>
 	_client: AxiosInstance
 }
